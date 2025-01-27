@@ -1,5 +1,6 @@
 package com.example.hipple.controller;
 
+import com.example.hipple.domain.Form;
 import com.example.hipple.domain.Guide;
 import com.example.hipple.domain.User;
 import com.example.hipple.service.UserService;
@@ -17,6 +18,12 @@ public class TestController {
     public String test(@RequestBody Guide guide) {
 
         userService.save(guide);
+        return "ok";
+    }
+
+    @PostMapping("/{userId}/saveForm")
+    public String saveForm(@PathVariable Long userId, @RequestBody Form form) {
+        Service.save(form);
         return "ok";
     }
 }
