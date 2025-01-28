@@ -20,10 +20,4 @@ public class TestController {
         userService.save(guide);
         return "ok";
     }
-
-    @PostMapping("/{userId}/saveForm")
-    public String saveForm(@PathVariable Long userId, @RequestBody Form form) {
-        Service.save(form);
-        return "ok";
-    }
 }
