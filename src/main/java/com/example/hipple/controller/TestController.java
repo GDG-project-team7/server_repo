@@ -20,4 +20,10 @@ public class TestController {
         userService.save(guide);
         return "ok";
     }
+
+    //배포 test
+    @GetMapping("/testing")
+    public String helloWorld(){
+        return "Hello! World!";
+    }
 }
