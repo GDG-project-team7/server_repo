@@ -35,3 +35,5 @@ spring:
   jwt:
     secret: ${jwt.secret}
     access-token-validity-in-milliseconds: ${jwt.access-token-validity-in-milliseconds}
+    client_id: ${google_client_id}
+    client_secret: ${google_client_secret}
