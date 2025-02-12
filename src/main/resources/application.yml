@@ -3,9 +3,9 @@ spring:
   profiles:
     active: prod
   datasource:
-    url: jdbc:mysql://localhost:3306/hipple
-    username: root  # MySQL ????
-    password: 1234 # MySQL ????
+    url: ${DB_JDBC_URL}
+    username: ${DB_USER_NAME}  # MySQL ????
+    password: ${DB_PASSWORD} # MySQL ????
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -18,12 +18,12 @@ spring:
       open-in-view: false
   mysql:
     datasource:
-      url: jdbc:mysql://localhost:3306/hipple
-      username: root
-      password: 1234
+      url: ${DB_JDBC_URL}
+      username: ${DB_USER_NAME}
+      password: ${DB_PASSWORD}
   data:
-    username: root
-    password: 1234
+    username: ${DB_USER_NAME}
+    password: ${DB_PASSWORD}
     driverClassName: com.mysql.cj.jdbc.Driver
   logging:
     level:
