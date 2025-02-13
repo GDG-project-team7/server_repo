@@ -9,12 +9,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create  # update, validate, create, none (?? ??? ?? ??)
+      ddl-auto: update  # update, validate, create, none (?? ??? ?? ??)
+      dialect: org.hibernate.dialect.MySQL5Dialect
     show-sql: true  # SQL ?? ?? ?? (??? ??)
     properties:
       hibernate:
         show_sql: true
         format_sql: true  # SQL ?? ?? ?? ??
+        dialect: org.hibernate.dialect.MySQLDialect
       open-in-view: false
   mysql:
     datasource:
