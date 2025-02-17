@@ -25,16 +25,20 @@ public abstract class User {
 
     @Column(name = "user_name")
     private String userName;
+
     private boolean isGuide;
     private int regionId;
+    private String email;
+    private String phoneNumber;
+    private int birthday6Numbers;
 
-    @OneToMany(mappedBy = "user")
-    private List<Form> forms = new ArrayList<>();
-
-    public User(String password, String userName, boolean isGuide, int regionId) {
+    public User(String password, String userName, boolean isGuide, int regionId, String email, String phoneNumber, int birthday6Numbers) {
         this.password = password;
         this.userName = userName;
         this.isGuide = isGuide;
         this.regionId = regionId;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.birthday6Numbers = birthday6Numbers;
     }
 }
