@@ -1,13 +1,12 @@
 package com.example.hipple.service;
 
-import com.example.hipple.domain.Guide;
-import com.example.hipple.domain.Portfolio;
-import com.example.hipple.domain.Traveler;
-import com.example.hipple.domain.User;
+import com.example.hipple.domain.*;
 import com.example.hipple.repository.GuideRepository;
 import com.example.hipple.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,5 +43,11 @@ public class UserService {
         guideRepository.save(guide);
 
         return guide.getPortfolio();
+    }
+
+    public List<Form> getForms(Long id) {
+        Guide guide = guideRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("가이드를 찾을 수 없어 견적서 조회가 불가능합니다."));
+        return guide.getForms();
     }
 }
