@@ -1,5 +1,8 @@
 package com.example.hipple.controller;
 
+import com.example.hipple.domain.Guide;
+import com.example.hipple.domain.Traveler;
+import com.example.hipple.domain.User;
 import com.example.hipple.dto.request.UserLogin;
 import com.example.hipple.dto.request.UserSignUp;
 import com.example.hipple.dto.response.TokenDto;
@@ -18,18 +21,24 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<UserInfo> saveUser(@RequestBody UserSignUp userSignUp) {
-        return ResponseEntity.ok().body(userService.saveUser(userSignUp));
+    @PostMapping("/saveGuide")
+    public ResponseEntity<Guide> saveUserGuide(@RequestBody Guide guide) {
+        return ResponseEntity.ok().body(userService.saveUserGuide(guide));
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody UserLogin userLogin) {
-        return ResponseEntity.ok().body(userService.loginUser(userLogin));
+    @PostMapping("/saveTraveler")
+    public ResponseEntity<Traveler> saveUserGuide(@RequestBody Traveler traveler) {
+        return ResponseEntity.ok().body(userService.saveUserTraveler(traveler));
     }
 
-    @GetMapping
-    public ResponseEntity<UserInfo> getUser(Principal principal) {
-        return ResponseEntity.ok().body(userService.getUser(principal));
-    }
+
+//    @GetMapping("/login")
+//    public ResponseEntity<TokenDto> login(@RequestBody UserLogin userLogin) {
+//        return ResponseEntity.ok().body(userService.loginUser(userLogin));
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<UserInfo> getUser(Principal principal) {
+//        return ResponseEntity.ok().body(userService.getUser(principal));
+//    }
 }
