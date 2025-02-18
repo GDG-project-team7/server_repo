@@ -27,14 +27,16 @@ public class Form {
     private boolean gender;     // 성별 (true: 남성, false: 여성)
     private String text;        // 여행에 대한 텍스트 정보
     private Long travelDate;    // 여행 날짜 (여기서는 Long으로 표현, 실제로 Date타입이 필요할 수 있음)
+    private String isAccepted;
 
     // Form 객체를 생성하는 생성자
-    public Form(Long age, boolean gender, String text, Long travelDate, Guide guide, Traveler traveler) {
+    public Form(Long age, boolean gender, String text, Long travelDate, String isAccepted, Guide guide, Traveler traveler) {
         this.age = age;
         this.gender = gender;
         this.text = text;
         this.travelDate = travelDate;
         this.guide = guide;      // Guide와 연관되도록 설정
-        this.traveler = traveler;  // Traveler와 연관되도록 설정
+        this.traveler = traveler;// Traveler와 연관되도록 설정
+        this.isAccepted = isAccepted;
     }
 }
