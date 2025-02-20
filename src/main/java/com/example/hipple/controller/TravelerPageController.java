@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -16,15 +17,16 @@ import java.util.List;
 public class TravelerPageController {
     private final TravelerService travelerService;
 
-    // 각 지역의 가이드들을 검색합니다.
-    @GetMapping("/getRegionGuideList")
-    public ResponseEntity<List<Guide>> guideListByRegionId(Long regionId){
-        return ResponseEntity.ok().body(travelerService.getRegionGuide(regionId));
-    }
+//    // 각 지역의 가이드들을 검색합니다.
+//    @GetMapping("/getRegionGuideList")
+//    public ResponseEntity<List<Guide>> guideListByRegionId(Long regionId){
+//        return ResponseEntity.ok().body(travelerService.getRegionGuide(regionId));
+//    }
 
-    // 매칭된 가이드를 검색합니다.
-    @GetMapping("/getMatchingGuide")
-    public ResponseEntity<Guide> matchingGuide(Long travelerId){
-        return ResponseEntity.ok().body(travelerService.getMatchingGuide(travelerId));
-    }
+//    // 매칭된 가이드를 검색합니다.
+//    @GetMapping("/{travelerId}/getMatchingGuide")
+//    public ResponseEntity<Guide> matchingGuide(@PathVariable Long userId){
+//        return ResponseEntity.ok().body(travelerService.getMatchingGuide(userId));
+//    }
+//}
 }

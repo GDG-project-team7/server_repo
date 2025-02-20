@@ -12,16 +12,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TravelerService {
     private final GuideRepository guideRepository;
-
-    public List<Guide> getRegionGuide(Long regionId){
-        List<Guide> guideList = new ArrayList<>();
-        guideList = guideRepository.findAllByRegionId(regionId);
-
-        return guideList;
-    }
-
-    public Guide getMatchingGuide(Long travelerId){
-        Guide guide = guideRepository.findGuideByForms_Traveler_Id(travelerId);
-        return guide;
-    }
+//
+//    public List<Guide> getRegionGuide(Long regionId){
+//        List<Guide> guideList = new ArrayList<>();
+//        guideList = guideRepository.findAllByRegionId(regionId);
+//
+//        return guideList;
+//    }
+//
+//    public Guide getMatchingGuide(Long travelerId){
+//        Guide guide = guideRepository.findGuideByForms_User_Id(travelerId);
+//        return guide;
+//    }
 }
