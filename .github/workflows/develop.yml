@@ -67,7 +67,7 @@ jobs:
 
             sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
             --name sss_team7:latest\
-            -e SPRING_DATASOURCE_URL=${{ secrets.DB_URL }} \
-            -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USERNAME }} \
+            -e SPRING_DATASOURCE_URL=${{ secrets.DB_JDBC_URL }} \
+            -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USER_NAME }} \
             -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -d ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest
