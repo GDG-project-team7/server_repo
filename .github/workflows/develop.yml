@@ -41,19 +41,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       # ECR 로그인
-      - name: ECR login
+      - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       # 도커 이미지 생성
       - name: Docker image create
-        run: docker build -t sss-project:latest .
+        run: docker build -t sss_team7:latest .
 
       - name: Docker 이미지에 Tag 붙이기
-        run: docker tag sss-project:latest ${{ steps.login-ecr.outputs.registry }}/sss-project:latest
+        run: docker tag sss_team7:latest ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
 
       - name: ECR에 Docker 이미지 Push하기
-        run: docker push ${{ steps.login-ecr.outputs.registry }}/sss-project:latest
+        run: docker push ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
 
       - name: SSH로 EC2에 접속하기
         uses: appleboy/ssh-action@v1.0.3
@@ -64,9 +64,9 @@ jobs:
           script_stop: true
           script: |
           # ECR 로그인 다시 시도
-            docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) ${{ steps.login-ecr.outputs.registry }}
+            docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) ${{ secrets.AWS_ECR_REGISTRY }}
 
             docker stop my-new-container || true
             docker rm my-new-container || true
-            docker pull ${{ steps.login-ecr.outputs.registry }}/sss-project:latest
-            docker run -d --name my-new-container -p 8080:8080 ${{ steps.login-ecr.outputs.registry }}/sss-project:latest
+            docker pull ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
+            docker run -d --name my-new-container ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
