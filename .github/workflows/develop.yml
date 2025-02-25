@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - feature/#35 # main브랜치
+      - feature/#35  # main브랜치
   pull_request:
     branches:
-      - feature/#35 # main브랜치
+      - feature/#35  # main브랜치
 
 jobs:
   deploy:
@@ -33,7 +33,8 @@ jobs:
       - name: Build
         run: ./gradlew clean build
 
-      - name: AWS Resource에  AWS credentials 설정
+      # AWS Resource에 AWS credentials 설정
+      - name: AWS Credentials Setup
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ap-northeast-2
@@ -45,17 +46,20 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # 도커 이미지 생성
+      # Docker 이미지 생성
       - name: Docker image create
         run: docker build -t sss_team7:latest .
 
-      - name: Docker 이미지에 Tag 붙이기
+      # Docker 이미지에 Tag 붙이기
+      - name: Docker image tagging
         run: docker tag sss_team7:latest ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
 
-      - name: ECR에 Docker 이미지 Push하기
+      # ECR에 Docker 이미지 Push하기
+      - name: Push Docker image to ECR
         run: docker push ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
 
-      - name: SSH로 EC2에 접속하기
+      # SSH로 EC2에 접속하여 Docker 실행
+      - name: SSH into EC2 and deploy Docker image
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -63,10 +67,13 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-          # ECR 로그인 다시 시도
+            # ECR 로그인 다시 시도
             docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) ${{ secrets.AWS_ECR_REGISTRY }}
-
+            
+            # 기존 Docker 컨테이너 중지 및 삭제
             docker stop my-new-container || true
             docker rm my-new-container || true
+
+            # 새로운 Docker 이미지 다운로드 및 실행
             docker pull ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
             docker run -d --name my-new-container ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
