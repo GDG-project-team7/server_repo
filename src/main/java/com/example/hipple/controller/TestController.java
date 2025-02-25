@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/test")
+@RequestMapping("/Test")
 @Tag(name = "test", description = "테스트용")
 public class TestController {
 
