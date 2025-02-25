@@ -11,7 +11,12 @@ on:
 
 jobs:
   deploy:
+    name: Build Docker image and push
     runs-on: ubuntu-latest
+    env:
+      DB_JDBC_URL: ${{ secrets.RDS_DB_URL }}  # RDS의 URL을 GitHub Secrets에서 가져옴
+      DB_USER_NAME: ${{ secrets.RDS_DB_USER }}  # RDS 사용자명
+      DB_PASSWORD: ${{ secrets.RDS_DB_PASSWORD }}  # RDS 비밀번호
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
