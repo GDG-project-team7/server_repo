@@ -1,4 +1,4 @@
-#1
+#2
 name: CI/CD Pipeline
 
 on:
@@ -11,9 +11,7 @@ on:
 
 jobs:
   deploy:
-    name: Build Docker image and push
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
