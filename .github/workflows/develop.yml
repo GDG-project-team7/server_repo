@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - feature/#1 # main브랜치
+      - feature/#35 # main브랜치
   pull_request:
     branches:
-      - feature/#1 # main브랜치
+      - feature/#35 # main브랜치
 
 jobs:
   build:
