@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - feature/#35  # main브랜치
+      - feature/#35
   pull_request:
     branches:
-      - feature/#35  # main브랜치
+      - feature/#35
 
 jobs:
   deploy:
@@ -14,26 +14,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 코드 체크아웃
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # JDK 설치
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
 
-      # Gradle Build - 실행 권한 부여
       - name: Gradle
         run: chmod +x ./gradlew
 
-      # 테스트 및 빌드하기
       - name: Build
         run: ./gradlew clean build
 
-      # AWS Resource에 AWS credentials 설정
       - name: AWS Credentials Setup
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -41,24 +36,19 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      # ECR 로그인
       - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # Docker 이미지 생성
       - name: Docker image create
         run: docker build -t sss_team7:latest .
 
-      # Docker 이미지에 Tag 붙이기
       - name: Docker image tagging
         run: docker tag sss_team7:latest ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
 
-      # ECR에 Docker 이미지 Push하기
       - name: Push Docker image to ECR
         run: docker push ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
 
-      # SSH로 EC2에 접속하여 Docker 실행
       - name: SSH into EC2 and deploy Docker image
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -67,13 +57,13 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-          # ECR 로그인 다시 시도
+            # ECR 로그인 다시 시도
             docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) ${{ secrets.AWS_ECR_REGISTRY }}
-            
-          # 기존 Docker 컨테이너 중지 및 삭제
+
+            # 기존 Docker 컨테이너 중지 및 삭제
             docker stop my-new-container || true
             docker rm my-new-container || true
 
-          # 새로운 Docker 이미지 다운로드 및 실행
+            # 새로운 Docker 이미지 다운로드 및 실행
             docker pull ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
             docker run -d --name my-new-container ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
