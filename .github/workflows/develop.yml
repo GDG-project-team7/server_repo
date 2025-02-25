@@ -67,13 +67,13 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            # ECR 로그인 다시 시도
+          # ECR 로그인 다시 시도
             docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) ${{ secrets.AWS_ECR_REGISTRY }}
             
-            # 기존 Docker 컨테이너 중지 및 삭제
+          # 기존 Docker 컨테이너 중지 및 삭제
             docker stop my-new-container || true
             docker rm my-new-container || true
 
-            # 새로운 Docker 이미지 다운로드 및 실행
+          # 새로운 Docker 이미지 다운로드 및 실행
             docker pull ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
             docker run -d --name my-new-container ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
