@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FormService {
@@ -23,19 +25,23 @@ public class FormService {
     public Form getForm(Long id) {
         return formRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 견적서를 찾을 수 없습니다."));
     }
-//
-//    public String submitForm(Long travelerId, Long guideId, Form formRequest) {
-//        Traveler traveler = travelerRepository.findById(travelerId)
-//                .orElseThrow(() -> new RuntimeException("Traveler를 찾을 수 없습니다."));
-//        Guide guide = guideRepository.findById(guideId)
-//                .orElseThrow(() -> new RuntimeException("Guide를 찾을 수 없습니다."));
-//
-//        //Long age, boolean gender, String text, Long travelDate, Guide guide, Traveler traveler
-//        Form form = new Form(formRequest.getAge(), formRequest.isGender(), formRequest.getText(), formRequest.getTravelDate(), "pending", guide, traveler);
-//        formRepository.save(form);
-//
-//        return "해당 견적서가 가이드에게 요청되었습니다.";
-//    }
+
+    public String submitForm(Long travelerId, Long guideId, Form formRequest) {
+        Traveler traveler = travelerRepository.findById(travelerId)
+                .orElseThrow(() -> new RuntimeException("Traveler를 찾을 수 없습니다."));
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new RuntimeException("Guide를 찾을 수 없습니다."));
+
+        //Long age, boolean gender, String text, Long travelDate, Guide guide, Traveler traveler
+        Form form = new Form(formRequest.getAge(), formRequest.isGender(), formRequest.getText(), formRequest.getTravelDate(), "pending", guide, traveler);
+        formRepository.save(form);
+
+        return "해당 견적서가 가이드에게 요청되었습니다.";
+    }
+
+    public int getPendingFormsCountByGuideId(Long guideId) {
+        return formRepository.findByGuide_UserIdAndIsAccepted(guideId, "pending").size();
+    }
 
     @Transactional
     public String acceptFormStatus(Long formId) {
@@ -47,11 +53,8 @@ public class FormService {
     }
 
     @Transactional
-    public String rejectFormStatus(Long formId) {
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new RuntimeException("해당 견적서를 찾을 수 없습니다."));
-
-        form.setIsAccepted("Reject");
+    public String rejectForm(Long formId) {
+        formRepository.deleteById(formId);
         return "견적서를 거절하였습니다.";
     }
 }

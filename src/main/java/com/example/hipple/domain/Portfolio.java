@@ -18,11 +18,12 @@ public class Portfolio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    private String profileText;
     private String travelPlace;
     private String foodPlace;
     private String photoPlace;
 
-    public Portfolio(String title, String travelPlace, String foodPlace, String photoPlace) {
+    public Portfolio(String title,String profileText, String travelPlace, String foodPlace, String photoPlace) {
         this.title = title;
         this.travelPlace = travelPlace;
         this.foodPlace = foodPlace;

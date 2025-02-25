@@ -30,20 +30,6 @@ public class TestController {
 
     public List<Form> createForms() {
         List<Form> forms = new ArrayList<>();
-
-        for (int i = 1; i <= 3; i++) {
-            // ✅ Form 생성
-            Form form = new Form(
-                    20L + i,  // 나이
-                    i % 2 == 0,  // 성별 (짝수면 true(남성), 홀수면 false(여성))
-                    "I want to travel " + i, // 여행 관련 텍스트
-                    System.currentTimeMillis() + (i * 100000L), // 여행 날짜
-                    "PENDING" // 승인 여부 (PENDING, ACCEPTED, REJECTED 등)
-            );
-
-            forms.add(form);
-        }
-
         return forms;
     }
 }

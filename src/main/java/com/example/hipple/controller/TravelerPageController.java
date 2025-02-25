@@ -17,16 +17,16 @@ import java.util.List;
 public class TravelerPageController {
     private final TravelerService travelerService;
 
-//    // 각 지역의 가이드들을 검색합니다.
-//    @GetMapping("/getRegionGuideList")
-//    public ResponseEntity<List<Guide>> guideListByRegionId(Long regionId){
-//        return ResponseEntity.ok().body(travelerService.getRegionGuide(regionId));
-//    }
+    // 각 지역의 가이드들을 검색합니다.
 
+    @GetMapping("/getRegionGuideList/{regionId}")
+    public ResponseEntity<List<Guide>> guideListByRegionId(@PathVariable Long regionId){
+        return ResponseEntity.ok().body(travelerService.getRegionGuide(regionId));
+    }
+//
 //    // 매칭된 가이드를 검색합니다.
 //    @GetMapping("/{travelerId}/getMatchingGuide")
-//    public ResponseEntity<Guide> matchingGuide(@PathVariable Long userId){
-//        return ResponseEntity.ok().body(travelerService.getMatchingGuide(userId));
+//    public ResponseEntity<Guide> matchingGuide(@PathVariable Long travelerId){
+//        return ResponseEntity.ok().body(travelerService.getMatchingGuide(travelerId));
 //    }
-//}
 }

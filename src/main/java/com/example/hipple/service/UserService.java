@@ -15,14 +15,24 @@ public class UserService {
     private final GuideRepository guideRepository;
 
 
-    public Guide saveUserGuide(Guide guide) {
+    public Long saveUserGuide(Guide guide) {
         userRepository.save(guide);
-        return guide;
+        return guide.getUserId();
+    }
+
+    public Guide getUserGuide(Long id) {
+        return guideRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("가이드를 찾을 수 없습니다."));
     }
 
     public Traveler saveUserTraveler(Traveler traveler) {
         userRepository.save(traveler);
         return traveler;
+    }
+
+    public User getUserTraveler(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("여행자를 찾을 수 없습니다."));
     }
 
     public String getInfoGuideName(Long id) {
@@ -45,9 +55,9 @@ public class UserService {
         return guide.getPortfolio();
     }
 
-//    public List<Form> getForms(Long id) {
-//        Guide guide = guideRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("가이드를 찾을 수 없어 견적서 조회가 불가능합니다."));
-//        return guide.getForms();
-//    }
+    public List<Form> getForms(Long id) {
+        Guide guide = guideRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("가이드를 찾을 수 없어 견적서 조회가 불가능합니다."));
+        return guide.getForms();
+    }
 }

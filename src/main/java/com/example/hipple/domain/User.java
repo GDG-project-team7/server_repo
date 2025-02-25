@@ -27,12 +27,15 @@ public abstract class User {
     private String userName;
 
     private boolean isGuide;
+    private boolean gender;
     private int regionId;
     private String email;
     private String phoneNumber;
     private int birthday6Numbers;
+    private String userAccountName;
 
-    public User(String password, String userName, boolean isGuide, int regionId, String email, String phoneNumber, int birthday6Numbers) {
+
+    public User(String password, String userName, boolean isGuide, int regionId, String email, String phoneNumber, int birthday6Numbers, String userAccountName, boolean gender) {
         this.password = password;
         this.userName = userName;
         this.isGuide = isGuide;
@@ -40,5 +43,7 @@ public abstract class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.birthday6Numbers = birthday6Numbers;
+        this.userAccountName = userAccountName;
+        this.gender = gender;
     }
 }
