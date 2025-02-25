@@ -45,9 +45,9 @@ public class UserService {
         return guide.getPortfolio();
     }
 
-//    public List<Form> getForms(Long id) {
-//        Guide guide = guideRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("가이드를 찾을 수 없어 견적서 조회가 불가능합니다."));
-//        return guide.getForms();
-//    }
+    public List<Form> getForms(Long id) {
+        Guide guide = guideRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("가이드를 찾을 수 없어 견적서 조회가 불가능합니다."));
+        return guide.getForms();
+    }
 }

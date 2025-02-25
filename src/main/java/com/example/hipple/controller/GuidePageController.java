@@ -37,11 +37,11 @@ public class GuidePageController {
         return userService.saveInfoGuidePortfolio(id, portfolio);
     }
 
-//    //가이드가 가지고 있는 견적서 리스트 확인
-//    @GetMapping("/{guideId}/getForms")
-//    public List<Form> getGuideForms(@PathVariable Long guideId) {
-//        return userService.getForms(guideId);
-//    }
+    //가이드가 가지고 있는 견적서 리스트 확인
+    @GetMapping("/{guideId}/getForms")
+    public List<Form> getGuideForms(@PathVariable Long guideId) {
+        return userService.getForms(guideId);
+    }
 
     //견적서 클릭 시, 하나의 견적서 보기
     @GetMapping("/{formId}/getForm")
