@@ -65,7 +65,7 @@ jobs:
           script_stop: true
           script:
              sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest
-                    cker run -d --rm \
+                  docker run -d --rm \
                     --name sss_team7 \
                     -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
                     -e SPRING_DATASOURCE_URL=${{ secrets.DB_JDBC_URL }} \
