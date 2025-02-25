@@ -1,0 +1,41 @@
+
+spring:
+  profiles:
+    active: prod
+  datasource:
+    url: ${DB_JDBC_URL}
+    username: ${DB_USER_NAME}  # MySQL ????
+    password: ${DB_PASSWORD} # MySQL ????
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update  # update, validate, create, none (?? ??? ?? ??)
+      dialect: org.hibernate.dialect.MySQL5Dialect
+    show-sql: true  # SQL ?? ?? ?? (??? ??)
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true  # SQL ?? ?? ?? ??
+        dialect: org.hibernate.dialect.MySQLDialect
+      open-in-view: false
+  mysql:
+    datasource:
+      url: ${DB_JDBC_URL}
+      username: ${DB_USER_NAME}
+      password: ${DB_PASSWORD}
+  data:
+    username: ${DB_USER_NAME}
+    password: ${DB_PASSWORD}
+    driverClassName: com.mysql.cj.jdbc.Driver
+  logging:
+    level:
+      org.hibernate.spl: debug
+      org.hibernate.typ0e: trace
+  kakao:
+    client_id: ${kakao.client_id}
+    redirect_uri: ${kakao.redirect_uri}
+  jwt:
+    secret: ${jwt.secret}
+    access-token-validity-in-milliseconds: ${jwt.access-token-validity-in-milliseconds}
+    client_id: ${google_client_id}
+    client_secret: ${google_client_secret}

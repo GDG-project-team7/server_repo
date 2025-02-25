@@ -14,12 +14,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/Test")
+@RequestMapping("/test")
 @Tag(name = "test", description = "테스트용")
 public class TestController {
 
     @GetMapping
     public String test() {
-        return "successssssssssssssssssssssssss";
+        return "Rrrrrr";
     }
 }
