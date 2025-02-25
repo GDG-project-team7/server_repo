@@ -10,8 +10,7 @@ on:
 
 jobs:
   build:
-    #main에 push될 때 docker 이미지 빌드하고 amazon ECR로 푸시
-    name: Build Docker image and push to ECR
+    name: Build Docker image and push
     runs-on: ubuntu-latest
 
     steps:
@@ -26,9 +25,13 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      # Gradle Build
-      - name: Build with Gradle
-        run: ./gradlew build
+      # Gradle Build - 실행 권한 부여
+      - name: Gradle
+        run: chmod +x ./gradlew
+
+      #테스트 및 빌드하기
+      - name: Build
+        run: ./gradlew clean build
 
       # DockerHub 로그인
       - name: Login to DockerHub
@@ -37,10 +40,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      # DockerHub Build
+
+      # DockerHub Build - 이미지 생성, Docker 이미지에 Tag 붙이고, push
       - name: Build and Push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest .
+          docker build -t sss_team7:latest .
+          docker tag sss_team7:latest ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest
   
 
@@ -57,17 +62,18 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
 
-          #
           script: |
-            sudo docker kill sss_team7:latest
-            sudo docker rm -f sss_team7:latest
-            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest
+          # 최신 이미지 가져오기
+             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest
 
-            sudo docker run -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
-            --name sss_team7:latest\
-            -e SPRING_DATASOURCE_URL=${{ secrets.DB_JDBC_URL }} \
-            -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USER_NAME }} \
-            -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -d ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest
+            # 새로운 컨테이너 실행
+                    cker run -d --rm \
+                    --name sss_team7 \
+                    -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
+                    -e SPRING_DATASOURCE_URL=${{ secrets.DB_JDBC_URL }} \
+                    -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USER_NAME }} \
+                    -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
+                    --restart unless-stopped \
+                    ${{ secrets.DOCKERHUB_USERNAME }}/sss_team7:latest
