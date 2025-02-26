@@ -31,10 +31,10 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build
-        run: ./gradlew clean build
+        run: ./gradlew build
 
-      - name: AWS Credentials Setup
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: AWS 인증
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-region: ap-northeast-2
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -42,21 +42,25 @@ jobs:
 
       - name: Log in to Amazon ECR
         id: login-ecr
+        # aws에서 공식적으로 제공하는 Github Actions 플러그인.
         uses: aws-actions/amazon-ecr-login@v2
 
+        # CLI 명령어 직접 실행하여 ECR에 로그인 하는 방식
+        # uses: aws-actions/amazon-ecr-login@v2
+
       - name: Docker image create
-        run: docker build -t sss_team7:latest .
+        run: docker build -t sss_team7 .
 
       - name: Docker image tagging
-        run: docker tag sss_team7:latest ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
+        run: docker tag sss_team7:latest ${{ secrets.AWS_ECR_REGISTRY }}:latest
 
       - name: Push Docker image to ECR
-        run: docker push ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
+        run: docker push ${{ secrets.AWS_ECR_REGISTRY }}:latest
 
       - name: SSH into EC2 and deploy Docker image
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ secrets.EC2_PUBLIC_IP }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
@@ -64,10 +68,11 @@ jobs:
             # ECR 로그인 다시 시도
             docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) ${{ secrets.AWS_ECR_REGISTRY }}
 
+            # 마지막으로 ECR에서 가져온 Docker 이미지 실행시키면 배포가 끝난다.
             # 기존 Docker 컨테이너 중지 및 삭제
-            docker stop my-new-container || true
-            docker rm my-new-container || true
+            docker stop hipple-app || true
+            docker rm hipple-app || true
 
             # 새로운 Docker 이미지 다운로드 및 실행
-            docker pull ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
-            docker run -d --name my-new-container ${{ secrets.AWS_ECR_REGISTRY }}/sss_team7:latest
+            docker pull ${{ steps.AWS_ECR_REGISTRY }}
+            docker run -d --name hipple-app -p 8080:8080 ${{ secrets.AWS_ECR_REGISTRY }}
