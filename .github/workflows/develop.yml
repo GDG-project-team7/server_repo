@@ -53,6 +53,12 @@ jobs:
       - name: Push Docker image to ECR
         run: docker push ${{ secrets.AWS_ECR_REGISTRY }}:latest
 
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
       - name: SSH into EC2 and deploy Docker image
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -71,5 +77,5 @@ jobs:
             docker rm hipple-app || true
 
             # 새로운 Docker 이미지 다운로드 및 실행
-            docker pull ${{ steps.AWS_ECR_REGISTRY }}
+            docker pull ${{ secrets.AWS_ECR_REGISTRY }}
             docker run -d --name hipple-app -p 8080:8080 ${{ secrets.AWS_ECR_REGISTRY }}
