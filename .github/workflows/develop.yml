@@ -53,12 +53,6 @@ jobs:
       - name: Push Docker image to ECR
         run: docker push ${{ secrets.AWS_ECR_REGISTRY }}:latest
 
-      - name: Set up SSH key
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh -o StrictHostKeyChecking=no user@host "echo 'SSH connection successful!'"
-
       - name: SSH into EC2 and deploy Docker image
         uses: appleboy/ssh-action@v1.0.3
         with:
