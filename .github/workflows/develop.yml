@@ -49,7 +49,7 @@ jobs:
         # uses: aws-actions/amazon-ecr-login@v2
 
       - name: Docker image create
-        run: docker build -t sss_team7 .
+        run: docker build -t sss_team7 -f build/libs/Dockerfile .
 
       - name: Docker image tagging
         run: docker tag sss_team7:latest ${{ secrets.AWS_ECR_REGISTRY }}:latest
