@@ -68,7 +68,7 @@ jobs:
             # 기존 Docker 컨테이너 강제 종료 및 삭제
             docker kill hipple-app || true
             docker rm -f hipple-app || true  
-
+            
             # 새로운 Docker 이미지 다운로드 및 실행
             docker pull ${{ secrets.AWS_ECR_REGISTRY }}
             docker run -d --name hipple-app -p 8080:8080 ${{ secrets.AWS_ECR_REGISTRY }}
