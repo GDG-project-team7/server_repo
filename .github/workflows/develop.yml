@@ -4,10 +4,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - feature/#35
+      - feature/#1
   pull_request:
     branches:
-      - feature/#35
+      - feature/#1
 
 jobs:
   deploy:
@@ -61,14 +61,13 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            echo "test"
             # ECR 로그인 다시 시도
             docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) ${{ secrets.AWS_ECR_REGISTRY }}
 
             # 마지막으로 ECR에서 가져온 Docker 이미지 실행시키면 배포가 끝난다.
-            # 기존 Docker 컨테이너 중지 및 삭제
-            docker stop hipple-app || true
-            docker rm hipple-app || true
+            # 기존 Docker 컨테이너 강제 종료 및 삭제
+            docker kill hipple-app || true
+            docker rm -f hipple-app || true  
 
             # 새로운 Docker 이미지 다운로드 및 실행
             docker pull ${{ secrets.AWS_ECR_REGISTRY }}
