@@ -1,7 +1,10 @@
 package com.example.hipple.service;
 
 import com.example.hipple.domain.Guide;
+import com.example.hipple.domain.Portfolio;
 import com.example.hipple.repository.GuideRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +15,19 @@ import java.util.List;
 public class GuideService {
     private final GuideRepository guideRepository;
 
-    public List<Guide> findGuidesByRegionId(Long regionId) {
-        return guideRepository.findAllByRegionId(regionId);
+    public Guide saveGuide(Guide guide){
+        guideRepository.save(guide);
+        return guide;
     }
 
-    public String saveGuide(Guide guide){
+    @Transactional
+    public Portfolio savePortfolio(Long guideId, Portfolio portfolio){
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() -> new EntityNotFoundException("Guide not found"));
+
+        guide.setPortfolio(portfolio);
         guideRepository.save(guide);
-        return "회원가입이 완료되었습니다.";
+
+        return portfolio;
     }
 }
