@@ -1,6 +1,7 @@
 package com.example.hipple.service;
 
 import com.example.hipple.domain.Guide;
+import com.example.hipple.domain.Portfolio;
 import com.example.hipple.repository.GuideRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,5 +19,17 @@ public class TravelerService {
         guideList = guideRepository.findAllByRegionId(regionId);
 
         return guideList;
+    }
+
+    public Guide getGuide(Long guideId){
+        return guideRepository.findById(guideId)
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public Portfolio getPortfolioByGuideId(Long guideId){
+        Guide guide = getGuide(guideId);
+        Portfolio portfolio = guide.getPortfolio();
+
+        return portfolio;
     }
 }

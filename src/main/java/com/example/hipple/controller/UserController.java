@@ -2,6 +2,8 @@ package com.example.hipple.controller;
 
 import com.example.hipple.domain.Guide;
 import com.example.hipple.domain.Traveler;
+import com.example.hipple.service.GuideService;
+import com.example.hipple.service.TravelerService;
 import com.example.hipple.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +15,16 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final TravelerService travelerService;
+    private final GuideService guideService;
 
     @PostMapping("/saveGuide")
-    public ResponseEntity<Guide> saveUserGuide(@RequestBody Guide guide) {
-        return ResponseEntity.ok().body(userService.saveUserGuide(guide));
+    public ResponseEntity<Guide> saveGuide(@RequestBody Guide guide) {
+        return ResponseEntity.ok().body(guideService.saveGuide(guide));
     }
 
     @PostMapping("/saveTraveler")
-    public ResponseEntity<Traveler> saveUserGuide(@RequestBody Traveler traveler) {
+    public ResponseEntity<Traveler> saveTraveler(@RequestBody Traveler traveler) {
         return ResponseEntity.ok().body(userService.saveUserTraveler(traveler));
     }
 
