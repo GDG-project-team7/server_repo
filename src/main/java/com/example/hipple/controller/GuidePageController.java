@@ -5,6 +5,7 @@ import com.example.hipple.domain.Guide;
 import com.example.hipple.domain.Portfolio;
 import com.example.hipple.repository.GuideRepository;
 import com.example.hipple.service.FormService;
+import com.example.hipple.service.GuideService;
 import com.example.hipple.service.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,13 @@ import java.util.List;
 public class GuidePageController {
     private final UserService userService;
     private final FormService formService;
+    private final GuideService guideService;
+
+    //지역ID로 가이드 리스트 조회
+    @GetMapping("/getGuidesByRegionId/{regionId}")
+    public List<Guide> getGuidesByRegionId(@PathVariable Long regionId) {
+        return guideService.findGuidesByRegionId(regionId);
+    }
 
     //가이드의 이름 보기
     @GetMapping("/getGuideName/{id}")
@@ -25,17 +33,6 @@ public class GuidePageController {
         return userService.getInfoGuideName(id);
     }
 
-    //가이드의 포트폴리오 보기
-    @GetMapping("/getGuidePortfolio/{id}")
-    public Portfolio getGuidePortfolio(@PathVariable Long id) {
-        return userService.getInfoGuidePortfolio(id);
-    }
-
-    //가이드의 포트폴리오 저장
-    @PostMapping("/saveGuidePortfolio/{id}")
-    public Portfolio saveGuidePortfolio(@PathVariable Long id, @RequestBody Portfolio portfolio) {
-        return userService.saveInfoGuidePortfolio(id, portfolio);
-    }
 
     //가이드가 가지고 있는 견적서 리스트 확인
     @GetMapping("/{guideId}/getForms")

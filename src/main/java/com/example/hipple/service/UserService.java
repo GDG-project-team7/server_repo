@@ -15,6 +15,8 @@ public class UserService {
     private final GuideRepository guideRepository;
 
 
+    // 가이드레포지토리에 넣어야 하지 않겠나 ..
+    // 근데 찾을 땐, 왜 가이드레포에서 찾는 것인가..
     public Guide saveUserGuide(Guide guide) {
         userRepository.save(guide);
         return guide;
