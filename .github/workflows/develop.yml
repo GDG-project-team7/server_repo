@@ -71,4 +71,16 @@ jobs:
             
             # 새로운 Docker 이미지 다운로드 및 실행
             docker pull ${{ secrets.AWS_ECR_REGISTRY }}
-            docker run -d --name hipple-app -p 8080:8080 ${{ secrets.AWS_ECR_REGISTRY }}
+            
+            # 환경변수 파일이 없으면 생성
+            if [ ! -f /home/ubuntu/.env ]; then
+              echo "DB_JDBC_URL=jdbc:mysql://hipple-database.cabcdefghijklmnop.rds.amazonaws.com:3306/your_database_name" > /home/ubuntu/.env
+              echo "DB_USER_NAME=admin" >> /home/ubuntu/.env
+              echo "DB_PASSWORD=hipple123" >> /home/ubuntu/.env
+            fi
+            
+            # docker run에서 .env 파일 로드하도록 변경
+            docker run -d --name hipple-app --env-file /home/ubuntu/.env -p 8080:8080 ${{ secrets.AWS_ECR_REGISTRY }}
+            # docker run -d --name hipple-app -p 8080:8080 ${{ secrets.AWS_ECR_REGISTRY }}
+            
+            echo ".env" >> .gitignore

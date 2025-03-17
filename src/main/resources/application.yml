@@ -1,11 +1,10 @@
-
 spring:
   profiles:
     active: prod
   datasource:
-    url: ${DB_JDBC_URL}
-    username: ${DB_USER_NAME}  # MySQL ????
-    password: ${DB_PASSWORD} # MySQL ????
+    url: jdbc:mysql://localhost:3306/hipple_db # ${DB_JDBC_URL}
+    username: root # ${DB_USER_NAME}  # MySQL ????
+    password: 0000 # ${DB_PASSWORD} # MySQL ????
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

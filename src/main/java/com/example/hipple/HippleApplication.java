@@ -9,5 +9,4 @@ public class HippleApplication {
     public static void main(String[] args) {
         SpringApplication.run(HippleApplication.class, args);
     }
-
 }
