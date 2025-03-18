@@ -1,7 +1,1 @@
 rootProject.name = 'hipple'
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
