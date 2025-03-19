@@ -82,5 +82,3 @@ jobs:
             # docker run에서 .env 파일 로드하도록 변경
             docker run -d --name hipple-app --env-file /home/ubuntu/.env -p 8080:8080 ${{ secrets.AWS_ECR_REGISTRY }}
             # docker run -d --name hipple-app -p 8080:8080 ${{ secrets.AWS_ECR_REGISTRY }}
-            
-            echo ".env" >> .gitignore
