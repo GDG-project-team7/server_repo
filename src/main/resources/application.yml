@@ -38,3 +38,12 @@ spring:
     access-token-validity-in-milliseconds: ${jwt.access-token-validity-in-milliseconds}
     client_id: ${google_client_id}
     client_secret: ${google_client_secret}
+
+  aws:
+    region:
+      static: ${AWS_REGION}
+    s3:
+      bucket: ${BUCKET_NAME}
+    credentials:
+      accessKey: ${BUCKET_ACCESS}
+      secretKey: ${BUCKET_SECRET}
