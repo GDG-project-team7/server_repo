@@ -1,8 +1,8 @@
 package com.example.hipple.controller;
 
-import com.example.hipple.dto.OCRdto;
 import com.example.hipple.service.OCRService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,13 +17,14 @@ public class OCRController {
 
     private final OCRService ocrService;
 
-    @PostMapping("/image")
-    public ResponseEntity<OCRdto> uploadImage(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/upload")
+    public ResponseEntity<String> extractText(@RequestParam("file") MultipartFile file) {
         try {
             String result = ocrService.extractTextFromImage(file);
-            return ResponseEntity.ok(new OCRdto(result));
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new OCRdto("OCR 실패: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("OCR 실패: " + e.getMessage());
         }
     }
 }

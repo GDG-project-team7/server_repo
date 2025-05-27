@@ -1,31 +1,51 @@
 package com.example.hipple.service;
 
+import com.example.hipple.domain.OcrResult;
+import com.example.hipple.dto.OcrResultResponse;
+import com.example.hipple.repository.OcrResultRepository;
+import lombok.RequiredArgsConstructor;
 import net.sourceforge.tess4j.Tesseract;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class OCRService {
 
-    public String extractTextFromImage(MultipartFile file) throws Exception {
-        // 1. MultipartFile → File 변환
+    private final OcrResultRepository ocrResultRepository;
+
+    public OcrResultResponse extractTextFromImage(MultipartFile file) throws Exception {
+        // 1. 임시 저장
         File tempFile = convertToFile(file);
 
-        // 2. Tesseract OCR 설정
+        // 2. OCR
         Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath("/usr/share/tessdata"); // Linux에 설치된 경로
+        tesseract.setDatapath("/usr/share/tessdata"); // 리눅스 기준
         tesseract.setLanguage("kor+eng");
+        String extractedText = tesseract.doOCR(tempFile);
 
-        // 3. OCR 실행
-        String result = tesseract.doOCR(tempFile);
+        // 3. DB 저장
+        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        OcrResult result = OcrResult.builder()
+                .filename(filename)
+                .extractedText(extractedText)
+                .createdAt(LocalDateTime.now())
+                .build();
+        OcrResult saved = ocrResultRepository.save(result);
 
-        // 4. 임시 파일 삭제
-        tempFile.delete();
-
-        return result;
+        // 4. 반환 DTO 생성
+        tempFile.delete(); // 임시 파일 삭제
+        return OcrResultResponse.builder()
+                .id(saved.getId())
+                .filename(saved.getFilename())
+                .extractedText(saved.getExtractedText())
+                .createdAt(saved.getCreatedAt())
+                .build();
     }
 
     private File convertToFile(MultipartFile file) throws IOException {
