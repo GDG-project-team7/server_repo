@@ -48,6 +48,17 @@ public class OCRService {
                 .build();
     }
 
+    public OcrResultResponse getOcrResultById(Long id) {
+        return ocrResultRepository.findById(id)
+                .map(result -> OcrResultResponse.builder()
+                        .id(result.getId())
+                        .filename(result.getFilename())
+                        .extractedText(result.getExtractedText())
+                        .createdAt(result.getCreatedAt())
+                        .build())
+                .orElse(null);
+    }
+
     private File convertToFile(MultipartFile file) throws IOException {
         File convFile = File.createTempFile("upload", ".jpg");
         file.transferTo(convFile);
