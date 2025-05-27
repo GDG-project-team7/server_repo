@@ -8,6 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ocr")
@@ -34,5 +40,21 @@ public class OCRController {
         return response != null
                 ? ResponseEntity.ok(response)
                 : ResponseEntity.notFound().build();
+    }
+
+    // 서버에 이미지 저장
+    @PostMapping("/image/save")
+    public ResponseEntity<String> saveImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path uploadPath = Paths.get("uploads", filename);
+            Files.createDirectories(uploadPath.getParent());
+            file.transferTo(uploadPath.toFile());
+
+            return ResponseEntity.ok("저장 완료: " + filename);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("저장 실패: " + e.getMessage());
+        }
     }
 }

@@ -40,6 +40,8 @@ public class OCRService {
 
         // 4. 반환 DTO 생성
         tempFile.delete(); // 임시 파일 삭제
+
+        // 결과 반환
         return OcrResultResponse.builder()
                 .id(saved.getId())
                 .filename(saved.getFilename())
