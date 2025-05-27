@@ -5,6 +5,8 @@ import com.example.hipple.dto.OcrResultResponse;
 import com.example.hipple.repository.OcrResultRepository;
 import com.example.hipple.service.OCRService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -100,5 +102,23 @@ public class OCRController {
 
         HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
         restTemplate.postForEntity("https://bddf-39-120-211-141.ngrok-free.app/ocr", request, String.class);
+    }
+
+    @GetMapping("/image/{filename}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get(System.getProperty("user.dir"), "uploads", filename);
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM) // 또는 이미지 형식으로 지정
+                    .body(resource);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
