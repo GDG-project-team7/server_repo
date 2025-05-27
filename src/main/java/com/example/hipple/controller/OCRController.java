@@ -47,9 +47,15 @@ public class OCRController {
     public ResponseEntity<String> saveImage(@RequestParam("file") MultipartFile file) {
         try {
             String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            Path uploadPath = Paths.get("uploads", filename);
-            Files.createDirectories(uploadPath.getParent());
-            file.transferTo(uploadPath.toFile());
+
+            // 절대경로 기준으로 uploads 디렉토리 생성
+            String uploadDir = System.getProperty("user.dir") + "/uploads";
+            Path uploadPath = Paths.get(uploadDir);
+
+            Files.createDirectories(uploadPath); // 없으면 생성
+
+            Path filePath = uploadPath.resolve(filename);
+            file.transferTo(filePath.toFile());
 
             return ResponseEntity.ok("저장 완료: " + filename);
         } catch (IOException e) {
@@ -57,4 +63,5 @@ public class OCRController {
                     .body("저장 실패: " + e.getMessage());
         }
     }
+
 }
