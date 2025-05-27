@@ -1,17 +1,21 @@
 package com.example.hipple.controller;
 
+import com.example.hipple.domain.OcrResult;
 import com.example.hipple.dto.OcrResultResponse;
+import com.example.hipple.repository.OcrResultRepository;
 import com.example.hipple.service.OCRService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +24,7 @@ import java.util.UUID;
 public class OCRController {
 
     private final OCRService ocrService;
+    private final OcrResultRepository ocrResultRepository;
 
     // POST /ocr/upload
     @PostMapping("/upload")
@@ -64,4 +69,36 @@ public class OCRController {
         }
     }
 
+    @PostMapping("/result")
+    public ResponseEntity<String> receiveOcrResult(@RequestBody Map<String, String> body) {
+        String imageId = body.get("image_id");
+        String ocrResult = body.get("ocr_result");
+
+        System.out.println("📩 AI로부터 받은 이미지 ID: " + imageId);
+        System.out.println("📩 AI로부터 받은 OCR 결과: " + ocrResult);
+
+        // 예시로 DB 저장도 가능
+        OcrResult saved = ocrResultRepository.save(OcrResult.builder()
+                                                           .filename(imageId)
+                                                           .extractedText(ocrResult)
+                                                           .createdAt(LocalDateTime.now())
+                                                           .build());
+
+        return ResponseEntity.ok("AI 결과 수신 및 저장 완료 (id: " + saved.getId() + ")");
+    }
+
+    // ✅ AI에 OCR 결과 전송
+    private void sendResultToAI(String imageId, String text) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, String> body = Map.of(
+                "image_id", imageId,
+                "ocr_result", text
+        );
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
+        restTemplate.postForEntity("https://bddf-39-120-211-141.ngrok-free.app/ocr", request, String.class);
+    }
 }
