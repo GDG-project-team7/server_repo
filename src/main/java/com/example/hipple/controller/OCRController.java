@@ -74,6 +74,7 @@ public class OCRController {
     }
 
 
+    //확인 필요
     @PostMapping("/result")
     public ResponseEntity<String> receiveOcrResult(@RequestBody Map<String, String> body) {
         String imageId = body.get("image_id");
