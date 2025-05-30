@@ -40,7 +40,7 @@ public class OCRController {
         }
     }
 
-    // GET /ocr/{id}
+    // GET /ocr/{id} ocr 결과 조회 -> 프론트
     @GetMapping("/{id}")
     public ResponseEntity<OcrResultResponse> getOcrResult(@PathVariable Long id) {
         OcrResultResponse response = ocrService.getOcrResultById(id);
@@ -49,14 +49,16 @@ public class OCRController {
                 : ResponseEntity.notFound().build();
     }
 
-    // 서버에 이미지 저장
+    // 서버에 이미지 저장 (프론트 -> 서버)
+    //1. ocr 연동시 postman으로 값 넣기
+    //build/libs에 저장됨.
     @PostMapping("/image/save")
     public ResponseEntity<String> saveImage(@RequestParam("file") MultipartFile file) {
         try {
             String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-            // 절대경로 기준으로 uploads 디렉토리 생성
-            String uploadDir = System.getProperty("user.dir") + "/uploads";
+            // uploads 디렉토리를 EC2 내 고정 경로로 변경
+            String uploadDir = "/home/ubuntu/uploads";
             Path uploadPath = Paths.get(uploadDir);
 
             Files.createDirectories(uploadPath); // 없으면 생성
@@ -71,13 +73,14 @@ public class OCRController {
         }
     }
 
+
     @PostMapping("/result")
     public ResponseEntity<String> receiveOcrResult(@RequestBody Map<String, String> body) {
         String imageId = body.get("image_id");
         String ocrResult = body.get("ocr_result");
 
-        System.out.println("📩 AI로부터 받은 이미지 ID: " + imageId);
-        System.out.println("📩 AI로부터 받은 OCR 결과: " + ocrResult);
+        System.out.println("AI로부터 받은 이미지 ID: " + imageId);
+        System.out.println("AI로부터 받은 OCR 결과: " + ocrResult);
 
         // 예시로 DB 저장도 가능
         OcrResult saved = ocrResultRepository.save(OcrResult.builder()
@@ -89,25 +92,11 @@ public class OCRController {
         return ResponseEntity.ok("AI 결과 수신 및 저장 완료 (id: " + saved.getId() + ")");
     }
 
-    // ✅ AI에 OCR 결과 전송
-    private void sendResultToAI(String imageId, String text) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Map<String, String> body = Map.of(
-                "image_id", imageId,
-                "ocr_result", text
-        );
-
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
-        restTemplate.postForEntity("https://bddf-39-120-211-141.ngrok-free.app/ocr", request, String.class);
-    }
-
+    //ai -> 서버
     @GetMapping("/image/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
-            Path filePath = Paths.get(System.getProperty("user.dir"), "uploads", filename);
+            Path filePath = Paths.get("/home/ubuntu/uploads", filename);
             Resource resource = new UrlResource(filePath.toUri());
 
             if (!resource.exists() || !resource.isReadable()) {
@@ -115,10 +104,11 @@ public class OCRController {
             }
 
             return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM) // 또는 이미지 형식으로 지정
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 }
