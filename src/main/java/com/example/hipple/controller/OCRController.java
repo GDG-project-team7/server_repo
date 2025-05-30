@@ -58,7 +58,7 @@ public class OCRController {
             String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
             // uploads 디렉토리를 EC2 내 고정 경로로 변경
-            String uploadDir = "/home/ubuntu/uploads";
+            String uploadDir = "/home/ubuntu/server_repo/build/libs/uploads";
             Path uploadPath = Paths.get(uploadDir);
 
             Files.createDirectories(uploadPath); // 없으면 생성
@@ -97,7 +97,7 @@ public class OCRController {
     @GetMapping("/image/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
-            Path filePath = Paths.get("/home/ubuntu/uploads", filename);
+            Path filePath = Paths.get("/home/ubuntu/server_repo/build/libs/uploads", filename);
             Resource resource = new UrlResource(filePath.toUri());
 
             if (!resource.exists() || !resource.isReadable()) {
